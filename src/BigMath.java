@@ -1,5 +1,3 @@
-package picalculator;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 
@@ -9,14 +7,14 @@ import java.math.MathContext;
 public class BigMath {
 	
 	private static final int precision = 100;
-	private static final int maxIteration = 150;
+	private static final int maxIteration = 1000;
 	// TODO: implement ability to hold pi to arbitrary precision
 	private static final BigDecimal pi = new BigDecimal("3.14159265358979323846264338327950288419716939937510582097494459");
 	
 	public static MathContext getContext() {
 		return new MathContext(precision);
 	}
-	
+
 	public static BigDecimal factorial(BigDecimal n) {
 		if (n.equals(1) || n.equals(0)) {
 			return BigDecimal.ONE;
@@ -78,5 +76,25 @@ public class BigMath {
 	
 	public static BigDecimal tan(BigDecimal angle) {
 		return sin(angle).divide(cos(angle), getContext());
+	}
+	
+	// 
+	
+	public static BigDecimal calculatePiTo(BigDecimal digit) {
+		BigDecimal approximatePi = new BigDecimal(0);
+		BigDecimal two = new BigDecimal(2);
+		
+		for (int n = 0; n < maxIteration; n++) {
+			BigDecimal twoToNPlusOne = two.pow(n+1);
+			BigDecimal nFactorialSquared = factorial(new BigDecimal(n)).pow(2);
+			BigDecimal twoNPlusOneFactorial = factorial(two.multiply(new BigDecimal(n)).add(BigDecimal.ONE));
+			approximatePi = twoToNPlusOne.multiply(nFactorialSquared).divide(twoNPlusOneFactorial, getContext());
+		}
+		
+		return approximatePi;
+	}
+	
+	public static void main(String[] args) {
+		System.out.println("PI: " + calculatePiTo(pi));
 	}
 }
